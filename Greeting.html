@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greeting Message</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+    <h2 id="greeting">Loading...</h2>
+
+    <script>
+        function displayGreetingWithUserName() {
+            // Get current hour to customize greeting
+            const date = new Date();
+            const hour = date.getHours();
+            let greetingMessage;
+
+            if (hour < 12) {
+                greetingMessage = "Good Morning";
+            } else if (hour < 18) {
+                greetingMessage = "Good Afternoon";
+            } else {
+                greetingMessage = "Good Evening";
+            }
+
+            // Simulate fetching user information (since this is hosted externally)
+            // You could adapt this if hosting on SharePoint
+            $.ajax({
+                url: "https://your-sharepoint-site/_api/web/currentUser",
+                type: "GET",
+                headers: { 
+                    "accept": "application/json;odata=verbose" 
+                },
+                success: function (data) {
+                    // Get the logged-in user's name
+                    const userName = data.d.Title;
+                    // Display greeting message with user name
+                    document.getElementById("greeting").innerText = `${greetingMessage}, ${userName}!`;
+                },
+                error: function (error) {
+                    console.error("Error retrieving user info: ", error);
+                    document.getElementById("greeting").innerText = greetingMessage + ", Guest!";
+                }
+            });
+        }
+
+        // Run the function when the page loads
+        window.onload = displayGreetingWithUserName;
+    </script>
+</body>
+</html>
